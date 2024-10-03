@@ -6,7 +6,7 @@
 /*   By: febouana <febouana@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 15:45:40 by febouana          #+#    #+#             */
-/*   Updated: 2024/09/30 19:02:20 by febouana         ###   ########.fr       */
+/*   Updated: 2024/10/03 19:14:28 by febouana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,21 +29,20 @@
 //     }   
 // }
 
-// void monitor_checker()
+// void monitor_checker(void *dataaa)
 // {
+//     data_idx_t data_index = *(data_idx_t *)dataaa;
+    
 //     int i;
 //     i = 0;
     
-//     data_t *data;
-//     data = get_data();
-    
 //     while(1)
 //     {
-//         if (i == data->nbr_philos)
+//         if (i == data.nbr_philos)
 //             i = 0;
-//         if (data->philosophers[i].is_dead == true)
+//         if (data.philosophers[i].is_dead == true)
 //         {
-//             data->stop = true;
+//             data.stop = true;
 //             printf("MONITOR : A PHILO IS DEAD\n");
 //             exit (2); //!
 //         }

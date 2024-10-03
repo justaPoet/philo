@@ -6,13 +6,13 @@
 #    By: febouana <febouana@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/11 14:53:55 by febouana          #+#    #+#              #
-#    Updated: 2024/09/17 14:55:22 by febouana         ###   ########.fr        #
+#    Updated: 2024/10/01 22:18:36 by febouana         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CC = 			cc
 
-CFLAGS = 		-Wall -Wextra -Werror
+CFLAGS = 		-Wall -Wextra -Werror  -g3
 
 RM = 			rm -f
 

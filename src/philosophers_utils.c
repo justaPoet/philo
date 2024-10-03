@@ -6,17 +6,11 @@
 /*   By: febouana <febouana@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 17:30:39 by febouana          #+#    #+#             */
-/*   Updated: 2024/10/01 17:01:55 by febouana         ###   ########.fr       */
+/*   Updated: 2024/10/03 21:24:28 by febouana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philosophers.h"
-
-data_t *get_data()
-{
-    static data_t data;
-    return (&data);
-}
 
 //? Permet de retourner le temps de depart EPOCH.
 long long    get_current_time(void)
@@ -30,15 +24,18 @@ long long    get_current_time(void)
     return (milliseconds);
 }
 
-void destroy_fork(data_t data)
+void destroy_fork(data_t *data)
 {
     int i;
     
     i = 0;
-    while (i < data.nbr_philos)
+    while (i < data->nbr_philos)
     {
-        if (pthread_mutex_destroy(&data.philosophers[i].fork_l) != 0)
+        if (pthread_mutex_destroy(&data->philosophers[i].fork_l) != 0)
+        {
+            printf("BAMBPOCLAT destroy fork\n");
             return ; //!GESTION ERROR
+        }
         i++;
     }   
 }
@@ -59,7 +56,7 @@ void destroy_fork(data_t data)
 //     return (0);
 // }
 
-//!
+//! check death solo
 // int  check_death_solo(data_t *data, int id)
 // {
 //     if (data->philosophers[id].left_locked)
@@ -71,23 +68,8 @@ void destroy_fork(data_t data)
 //     return (2);
 // }
 
-// void unlock_forks(data_t *data, int id) 
-// {
-//     if (data->philosophers[id].right_locked == true)
-//     {
-//         pthread_mutex_unlock(data->philosophers[id].fork_r);
-//         data->philosophers[id].right_locked = false;
-//     }
-//     if (data->philosophers[id].left_locked == true)
-//     {
-//         pthread_mutex_unlock(&data->philosophers[id].fork_l);
-//         data->philosophers[id].left_locked = false;
-//     }
-// }
-
 void unlock_forks(data_t *data, int id) 
 {
-    pthread_mutex_lock(&data->philosophers[id].mutex);
     if (data->philosophers[id].right_locked == true)
     {
         pthread_mutex_unlock(data->philosophers[id].fork_r);
@@ -98,24 +80,54 @@ void unlock_forks(data_t *data, int id)
         pthread_mutex_unlock(&data->philosophers[id].fork_l);
         data->philosophers[id].left_locked = false;
     }
-    pthread_mutex_unlock(&data->philosophers[id].mutex);
 }
 
+int lock_first_fork(data_t *data, int id, bool_t dead)
+{
+    if (stop_signal(data) || dead)
+    {
+        unlock_forks(data, id);
+        return (2);
+    }
+    if (id % 2 != 0)
+    {
+        pthread_mutex_lock(data->philosophers[id].fork_r);
+        data->philosophers[id].right_locked = true;
+    }
+    else 
+    {
+        pthread_mutex_lock(&data->philosophers[id].fork_l);
+        data->philosophers[id].left_locked = true;
+    }
+    print_all_action(data, 0, id, get_current_time() - data->start_time, dead);
+    return (0);
+}
 
-// int print_action2(data_t *data, long long time, char *emoji, char *action, int id, bool_t status)
-// {
-//     if (status == true)
-//         return (2);
-//     pthread_mutex_lock(&data->print);
-//     printf("%lld %s (%d) %s", time, emoji, id, action);
-//     pthread_mutex_unlock(&data->print);
-//     return (0);
-// }
+int lock_second_fork(data_t *data, int id, bool_t dead)
+{
+    if (stop_signal(data) || dead)
+    {      
+        unlock_forks(data, id);
+        return (2);
+    }
+    if (id % 2 != 0)
+    {
+        pthread_mutex_lock(&data->philosophers[id].fork_l);
+        data->philosophers[id].left_locked = true;
+    }
+    else
+    {    
+        pthread_mutex_lock(data->philosophers[id].fork_r);
+        data->philosophers[id].right_locked = true;
+    }    
+    print_all_action(data, 0, id, get_current_time() - data->start_time, dead); //!
+    return (0);
+}
 
-int	print_all_action(data_t *data, int option, int id, long long time, bool_t status)
+int	print_all_action(data_t *data, int option, int id, long long time, bool_t dead)
 {
     pthread_mutex_lock(&data->print);
-    if (status == true)
+    if (dead)
     {
         pthread_mutex_unlock(&data->print);
         return (2);
@@ -125,7 +137,7 @@ int	print_all_action(data_t *data, int option, int id, long long time, bool_t st
 		"%ld 🍝 (%d) is eating\n",
 		"%ld 💤 (%d) is sleeping\n",
 		"%ld 🤔 (%d) is thinking\n",
-		"%ld ☠️ (%d) died\n"};
+		"%ld ☠️  (%d) died\n"};
         
 	printf(actions[option], time, id + 1);
     pthread_mutex_unlock(&data->print);

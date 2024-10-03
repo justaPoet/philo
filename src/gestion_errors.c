@@ -6,7 +6,7 @@
 /*   By: febouana <febouana@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 19:38:53 by febouana          #+#    #+#             */
-/*   Updated: 2024/09/29 16:16:31 by febouana         ###   ########.fr       */
+/*   Updated: 2024/10/02 01:18:24 by febouana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void error_prompt()
 
 void error_forks(data_t *data)
 {
-	destroy_fork(*data); //! peux possiblement free des fork meme pas allouer et segment
+	destroy_fork(data); //! peux possiblement free des fork meme pas allouer et segment
 	free(data->philosophers); //OKOK
     //free(data); //OKOK
 }
