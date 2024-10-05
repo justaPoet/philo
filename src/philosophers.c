@@ -6,7 +6,7 @@
 /*   By: febouana <febouana@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 14:49:20 by febouana          #+#    #+#             */
-/*   Updated: 2024/10/03 20:57:24 by febouana         ###   ########.fr       */
+/*   Updated: 2024/10/04 23:17:07 by febouana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void join_philosophers(data_t *data)
         if (pthread_join(data->philosophers[i].philo, NULL) != 0)
         {
             printf("BAMBPOCLAT join philo\n");
-            return ;   //! GESTION ERROR   
+            return ;   //! gestion error
         }
         i++;
     } 
@@ -37,20 +37,14 @@ void create_philosophers(data_t *data)
     data->start_time = get_current_time(); //?safe
     if (data->start_time == -1)
         return ; //! gestion error      
-        
-    pthread_mutex_init(&data->print, NULL);
-    pthread_mutex_init(&data->will_die, NULL);
-    pthread_mutex_init(&data->m_stop, NULL); //!
-    
+    pthread_mutex_init(&data->m_print, NULL);
+    pthread_mutex_init(&data->m_stop, NULL);
     while (i < data->nbr_philos)
     {
         data->philosophers[i].repeat_meal_philo = data->repeat_meal; 
         data->philosophers[i].last_meal = 0; 
-        data->philosophers[i].last_last_meal = 0;
-        data->philosophers[i].id = i; //id pour print mort
         data->philosophers[i].is_dead = false;
-
-        data->philosophers[i].right_locked = false;
+        data->philosophers[i].left_locked = false;
         data->philosophers[i].right_locked = false;
         
         data_idx_t *data_idx = malloc(sizeof(*data_idx));
@@ -61,12 +55,8 @@ void create_philosophers(data_t *data)
             return ;
         i++;
     }   
-   // checkcheck_death(data);
 }
 
-//? OKOK
-//? assigne la bonne fork pour chaque philo + assigne au dernier 
-//? la fork du premier pour faire la boucle 
 void assign_fork(data_t *data)
 {
     int i;
@@ -80,8 +70,6 @@ void assign_fork(data_t *data)
     data->philosophers[i].fork_r = &data->philosophers[0].fork_l;
 } 
 
-//? OKOK
-//? creer le bon nombre de fork
 int create_forks(data_t *data)
 {
     int i;
@@ -91,38 +79,12 @@ int create_forks(data_t *data)
     {
         if (pthread_mutex_init(&(data->philosophers[i].fork_l), NULL) != 0)
         {
-            //error_forks(&data); //! peux possiblement free des fork meme pas allouer et segments
+            //error_forks(&data); //! peux possiblement free des fork meme pas allouer et segments //? envoyer "i" et destroy jusqu'a sa valeur
             return (2);
         }
         i++;
     }   
     assign_fork(data);
-    return (0);
-}
-
-int parsing_args(data_t *data, int argc, char **args)
-{
-    data->nbr_philos = ft_atol(args[1]);
-    if (data->nbr_philos > 200 || data->nbr_philos == 0)
-    {
-        error_prompt();
-        return (2); 
-    }
-    data->time_to_die = ft_atol(args[2]);
-    data->time_to_eat = ft_atol(args[3]);
-    data->time_to_sleep = ft_atol(args[4]);
-
-    if (argc == 6)
-    {
-        data->repeat_meal = ft_atol(args[5]);
-        if (data->repeat_meal == 0)
-        {
-            error_prompt();
-            return (2); 
-        }
-    }
-    else
-        data->repeat_meal = -1;
     return (0);
 }
 
@@ -148,18 +110,11 @@ int main(int argc, char **argv)
         return (2);
     create_philosophers(&data);
     join_philosophers(&data);
-
     destroy_fork(&data);
-    
-    // if (data.stop == false && data.repeat_meal > 0)
-    //     printf("\nEach philosopher ate %ld time(s) 🏆\n", data.repeat_meal);
-    // if (data.stop)
-    //     printf("%lld ☠️  (%d) IS DEAD\n", get_current_time() - data.start_time, data.id_philo_dead + 1); //!
-    
-    //pthread_mutex_destroy(&data->eating);
-    pthread_mutex_destroy(&data.print);    
-    //pthread_mutex_destroy(&data->repeat_eat);    
-    //pthread_mutex_destroy(&data->will_eating);
+    if (data.stop == false && data.repeat_meal > 0)
+        printf("\nEach philosopher ate %ld time(s) 🏆\n", data.repeat_meal);
+    pthread_mutex_destroy(&data.m_print);  
+    pthread_mutex_destroy(&data.m_stop);    
     free(data.philosophers);
 }
 
@@ -172,79 +127,13 @@ int main(int argc, char **argv)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Plus d'erreurs qd j'initie ma struct... ok?
-// void init_vars(data_t *data)
-// {
-//     data->nbr_philos = 0; 
-// 	data->time_to_die = 0;
-// 	data->time_to_eat = 0;
-// 	data->time_to_sleep = 0;
-// 	data->repeat_meal = -1;
-// 	data->start_time = 0;
-// }
-
-
-//! complique pour rien
-// bool_t everyone_is_full(data_t *data)
-// {
-//     int i;
-//     int good_ending;
-    
-//     i = 0;
-//     good_ending = 0;
-//     while (i < data->nbr_philos)
-//     {
-//         if (data->philosophers[i].is_full == true)
-//             good_ending++;   
-//         i++;
-//     } 
-//     if (i == good_ending)
-//         return (true);
-//     else 
-//         return (false);
-// }
-
-// void checkcheck_death(data_t *data)
-// {
-//     int i;
-//     i = 0;
-    
-//     while(1)
-//     {
-//         if (i == data->nbr_philos)
-//             i = 0;
-//         if (data->philosophers[i].is_dead == true)
-//         {
-//             pthread_mutex_lock(&data->m_stop);
-//             data->stop = true;
-//             pthread_mutex_lock(&data->m_stop);
-//             print_all_action(data, 5, i, get_current_time() - data->start_time, data->philosophers[i].is_dead); //? safe
-//             // sleep(5);
-//             // exit (2); //!
-//             return ;
-//         }
-//         // if (everyone_is_full(data))
-//         //     return ;
-//         i++;
-//     }   
-// }
+//+ TODOLIST :
+//+ mieux opti les cas de routine infini (5 500 200 200 | 4 410 200 200)
+    //!if nbr_philos == impair => faire sleep les pair plutot qu'eux et inversement 
+        //! rajouter condition avant de boucler pour faire sleep les bons...
+        //! ... et rajouter un if dans lock_forks (et unlock_forks ?) pour mieux opti aussi du coup
+    //+ remettre bool_t dead ?
+    //+ pour micro optimiser le calcul final : mettre un tri baleze que pour le premier passage, pas besoin pour ceux d'apres et trop gourmand ??
+//+ refaire destroy_forks()
+//+ finir la gestion d'erreurs (+ refaire au propre les init ?)
+//+ ((norminette))

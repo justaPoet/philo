@@ -5,8 +5,8 @@
 #                                                     +:+ +:+         +:+      #
 #    By: febouana <febouana@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2024/09/11 14:53:55 by febouana          #+#    #+#              #
-#    Updated: 2024/10/01 22:18:36 by febouana         ###   ########.fr        #
+#    Created: 2024/10/04 19:02:01 by febouana          #+#    #+#              #
+#    Updated: 2024/10/04 23:04:40 by febouana         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,6 +20,7 @@ NAME = 			philo
 
 SRC =			src/philosophers.c \
 				src/philosophers_routine.c \
+				src/philosophers_memento_mori.c \
 				src/philosophers_utils.c \
 				src/gestion_errors.c \
 				src/libft_utils.c \
