@@ -6,7 +6,7 @@
 /*   By: febouana <febouana@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 14:50:01 by febouana          #+#    #+#             */
-/*   Updated: 2024/10/04 23:04:06 by febouana         ###   ########.fr       */
+/*   Updated: 2024/10/06 22:46:44 by febouana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ typedef enum bool
 typedef struct philo_status
 {
 	pthread_t philo;         // OKOK
+	int id;
 	pthread_mutex_t fork_l;  // OKOK
 	pthread_mutex_t *fork_r; // OKOK
 	bool_t left_locked;      // OKOK
@@ -50,6 +51,9 @@ typedef struct data
 	pthread_mutex_t m_print;      // OKOK
 	pthread_mutex_t m_stop;       // OKOK
 	bool_t stop;                  // OKOK
+
+	pthread_mutex_t m_forks;       // OKOK
+
 }			data_t;
 
 typedef struct data_idx
@@ -94,5 +98,6 @@ int			parsing_args(data_t *data, int argc, char **args);
 long		ft_atol(const char *str);
 void		ft_putchar_fd(char c, int fd);
 void		ft_putstr_fd(char *s, int fd);
+
 
 #endif

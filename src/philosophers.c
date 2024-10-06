@@ -6,7 +6,7 @@
 /*   By: febouana <febouana@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 14:49:20 by febouana          #+#    #+#             */
-/*   Updated: 2024/10/04 23:17:07 by febouana         ###   ########.fr       */
+/*   Updated: 2024/10/07 00:26:33 by febouana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,16 +41,15 @@ void create_philosophers(data_t *data)
     pthread_mutex_init(&data->m_stop, NULL);
     while (i < data->nbr_philos)
     {
+        data->philosophers[i].id = i + 1;
         data->philosophers[i].repeat_meal_philo = data->repeat_meal; 
         data->philosophers[i].last_meal = 0; 
         data->philosophers[i].is_dead = false;
         data->philosophers[i].left_locked = false;
         data->philosophers[i].right_locked = false;
-        
         data_idx_t *data_idx = malloc(sizeof(*data_idx));
         data_idx->data = data;
         data_idx->idx = i;    
-        
         if (pthread_create(&(data->philosophers[i].philo), NULL, &philosopher_routine, data_idx) != 0)
             return ;
         i++;
@@ -79,7 +78,7 @@ int create_forks(data_t *data)
     {
         if (pthread_mutex_init(&(data->philosophers[i].fork_l), NULL) != 0)
         {
-            //error_forks(&data); //! peux possiblement free des fork meme pas allouer et segments //? envoyer "i" et destroy jusqu'a sa valeur
+            //error_forks_incomplet(&data); //! peux possiblement free des fork meme pas allouer et segments //? envoyer "i" et destroy jusqu'a sa valeur
             return (2);
         }
         i++;
