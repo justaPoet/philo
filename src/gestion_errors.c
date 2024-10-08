@@ -6,7 +6,7 @@
 /*   By: febouana <febouana@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 19:38:53 by febouana          #+#    #+#             */
-/*   Updated: 2024/10/04 22:29:01 by febouana         ###   ########.fr       */
+/*   Updated: 2024/10/08 20:48:11 by febouana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,26 +17,37 @@ void error_prompt()
     ft_putstr_fd("\033[31m$> ./philo [number_of_philosophers] [time_to_die] [time_to_eat] [time_to_sleep] ([number_of_times_each_philosopher_must_eat])\033[0m\n", 2);
 }
 
-void error_forks(data_t *data)
+void error_quit(data_t *data, int limit)
 {
-	destroy_fork(data); //! peux possiblement free des fork meme pas allouer et segment
+	destroy_fork(data, limit);
+    pthread_mutex_destroy(&data->m_print);  
+    pthread_mutex_destroy(&data->m_stop);  
 	free(data->philosophers);
+    ft_putstr_fd("\033[31mError\033[0m\n", 2);
 }
 
-void destroy_fork(data_t *data)
+void error_quit2(data_t *data, int limit)
+{     
+	destroy_fork(data, limit);
+    pthread_mutex_destroy(&data->m_print);  
+    pthread_mutex_destroy(&data->m_stop);  
+	free(data->philosophers);
+    join_philosophers(data, limit);
+    ft_putstr_fd("\033[31mError\033[0m\n", 2);
+}
+
+int destroy_fork(data_t *data, int limit)
 {
     int i;
     
     i = 0;
-    while (i < data->nbr_philos)
+    while (i < limit)
     {
         if (pthread_mutex_destroy(&data->philosophers[i].fork_l) != 0)
-        {
-            printf("BAMBPOCLAT destroy fork\n");
-            return ; //!GESTION ERROR
-        }
+            return (2);
         i++;
     }   
+    return (0);
 }
 
 int	verif_args(char **args)
@@ -59,30 +70,5 @@ int	verif_args(char **args)
 		}
 		x++;
 	}
-    return (0);
-}
-
-int parsing_args(data_t *data, int argc, char **args)
-{
-    data->nbr_philos = ft_atol(args[1]);
-    data->time_to_die = ft_atol(args[2]);
-    data->time_to_eat = ft_atol(args[3]);
-    data->time_to_sleep = ft_atol(args[4]);
-    if (data->nbr_philos > 200 || data->nbr_philos == 0 || data->time_to_die < 60 || data->time_to_eat < 60 || data->time_to_sleep < 60)
-    {
-        error_prompt();
-        return (2); 
-    }
-    if (argc == 6)
-    {
-        data->repeat_meal = ft_atol(args[5]);
-        if (data->repeat_meal == 0)
-        {
-            error_prompt();
-            return (2); 
-        }
-    }
-    else
-        data->repeat_meal = -1;
     return (0);
 }
