@@ -6,14 +6,14 @@
 /*   By: febouana <febouana@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 14:52:56 by febouana          #+#    #+#             */
-/*   Updated: 2024/10/08 17:46:56 by febouana         ###   ########.fr       */
+/*   Updated: 2024/10/08 21:22:16 by febouana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philosophers.h"
 
 //? + > - == 1 | + < - == 0
-int	verif_thinking(data_t *data, int id)
+int	verif_thinking(t_data *data, int id)
 {
 	if (stop_signal(data, data->philosophers[id].is_dead))
 		return (2);
@@ -23,7 +23,7 @@ int	verif_thinking(data_t *data, int id)
 	return (0);
 }
 
-int	verif_sleeping(data_t *data, long time_to_sleep, int id)
+int	verif_sleeping(t_data *data, long time_to_sleep, int id)
 {
 	if (time_to_sleep >= data->time_to_die)
 	{
@@ -37,7 +37,7 @@ int	verif_sleeping(data_t *data, long time_to_sleep, int id)
 	return (0);
 }
 
-int	verif_eating(data_t *data, long time_to_eat, int id)
+int	verif_eating(t_data *data, long time_to_eat, int id)
 {
 	if (data->time_to_die < ((get_current_time() - data->start_time)
 			- data->philosophers[id].last_meal))
@@ -54,7 +54,7 @@ int	verif_eating(data_t *data, long time_to_eat, int id)
 	return (0);
 }
 
-int	complet_routine(data_t *data, int id)
+int	complet_routine(t_data *data, int id)
 {
 	if (data->time_to_die <= (data->time_to_eat))
 	{
@@ -72,7 +72,7 @@ int	complet_routine(data_t *data, int id)
 		verif_eating(data, data->time_to_eat, id);
 		verif_sleeping(data, data->time_to_sleep, id);
 		verif_thinking(data, id);
-		data->philosophers[id].repeat_meal_philo--; //?safe
+		data->philosophers[id].repeat_meal_philo--;
 	}
 	direction_unlock_forks(data, id);
 	return (0);
@@ -80,9 +80,9 @@ int	complet_routine(data_t *data, int id)
 
 void	*philosopher_routine(void *philo)
 {
-	data_tmp_t	data_tmp;
+	t_data_tmp	data_tmp;
 
-	data_tmp = *(data_tmp_t *)philo;
+	data_tmp = *(t_data_tmp *)philo;
 	free(philo);
 	if (data_tmp.data->nbr_philos == 1)
 		routine_solo(data_tmp.data, data_tmp.id);

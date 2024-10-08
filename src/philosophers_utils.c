@@ -6,13 +6,13 @@
 /*   By: febouana <febouana@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 17:30:39 by febouana          #+#    #+#             */
-/*   Updated: 2024/10/08 20:43:00 by febouana         ###   ########.fr       */
+/*   Updated: 2024/10/08 21:17:44 by febouana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philosophers.h"
 
-void	assign_fork(data_t *data)
+void	assign_fork(t_data *data)
 {
 	int	i;
 
@@ -25,7 +25,7 @@ void	assign_fork(data_t *data)
 	data->philosophers[i].fork_r = &data->philosophers[0].fork_l;
 }
 
-int	create_forks(data_t *data)
+int	create_forks(t_data *data)
 {
 	int	i;
 
@@ -54,7 +54,7 @@ long long	get_current_time(void)
 	return (milliseconds);
 }
 
-void	good_ending(data_t *data)
+void	good_ending(t_data *data)
 {
 	if (data->stop == false && data->repeat_meal > 0)
 		printf("\nEach philosopher ate %ld time(s) 🏆\n", data->repeat_meal);
@@ -64,11 +64,11 @@ void	good_ending(data_t *data)
 	free(data->philosophers);
 }
 
-int	ft_print(data_t *data, int option, int id, long long time)
+int	ft_print(t_data *data, int option, int id, long long time)
 {
-	char	*actions[5] = {"%ld 🍴 (%d) has taken a fork\n",
-			"%ld 🍝 (%d) is eating\n", "%ld 💤 (%d) is sleeping\n",
-			"%ld 🤔 (%d) is thinking\n", "%ld ☠️  (%d) died\n"};
+	const char	*actions[5] = {"%ld 🍴 (%d) has taken a fork\n",
+		"%ld 🍝 (%d) is eating\n", "%ld 💤 (%d) is sleeping\n",
+		"%ld 🤔 (%d) is thinking\n", "%ld ☠️  (%d) died\n"};
 
 	pthread_mutex_lock(&data->m_print);
 	if (data->philosophers[id].is_dead)
@@ -82,7 +82,7 @@ int	ft_print(data_t *data, int option, int id, long long time)
 }
 
 //? Philosophers visualizer
-// int	ft_print(data_t *data, int option, int id, long long time)
+// int	ft_print(t_data *data, int option, int id, long long time)
 // {
 //     pthread_mutex_lock(&data->m_print);
 //     if (data->philosophers[id].is_dead)

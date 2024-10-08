@@ -6,13 +6,13 @@
 /*   By: febouana <febouana@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 14:49:20 by febouana          #+#    #+#             */
-/*   Updated: 2024/10/08 20:48:15 by febouana         ###   ########.fr       */
+/*   Updated: 2024/10/08 21:19:33 by febouana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philosophers.h"
 
-int	join_philosophers(data_t *data, int limit)
+int	join_philosophers(t_data *data, int limit)
 {
 	int	i;
 
@@ -29,10 +29,10 @@ int	join_philosophers(data_t *data, int limit)
 	return (0);
 }
 
-int	create_philosophers(data_t *data)
+int	create_philosophers(t_data *data)
 {
 	int			i;
-	data_tmp_t	*data_tmp;
+	t_data_tmp	*data_tmp;
 
 	i = 0;
 	while (i < data->nbr_philos)
@@ -56,7 +56,7 @@ int	create_philosophers(data_t *data)
 	return (0);
 }
 
-int	init_struct(data_t *data)
+int	init_struct(t_data *data)
 {
 	int	i;
 
@@ -83,36 +83,36 @@ int	init_struct(data_t *data)
 	return (0);
 }
 
-int parsing_args(data_t *data, int argc, char **args)
+int	parsing_args(t_data *data, int argc, char **args)
 {
-    data->nbr_philos = ft_atol(args[1]);
-    data->time_to_die = ft_atol(args[2]);
-    data->time_to_eat = ft_atol(args[3]);
-    data->time_to_sleep = ft_atol(args[4]);
-    if (data->nbr_philos > 200 || data->nbr_philos == 0 || data->time_to_die < 60 || data->time_to_eat < 60 || data->time_to_sleep < 60)
-    {
-        error_prompt();
-        return (2); 
-    }
-    if (argc == 6)
-    {
-        data->repeat_meal = ft_atol(args[5]);
-        if (data->repeat_meal == 0)
-        {
-            error_prompt();
-            return (2); 
-        }
-    }
-    else
-        data->repeat_meal = -1;
-    return (0);
+	data->nbr_philos = ft_atol(args[1]);
+	data->time_to_die = ft_atol(args[2]);
+	data->time_to_eat = ft_atol(args[3]);
+	data->time_to_sleep = ft_atol(args[4]);
+	if (data->nbr_philos > 200 || data->nbr_philos == 0
+		|| data->time_to_die < 60 || data->time_to_eat < 60
+		|| data->time_to_sleep < 60)
+	{
+		error_prompt();
+		return (2);
+	}
+	if (argc == 6)
+	{
+		data->repeat_meal = ft_atol(args[5]);
+		if (data->repeat_meal == 0)
+		{
+			error_prompt();
+			return (2);
+		}
+	}
+	else
+		data->repeat_meal = -1;
+	return (0);
 }
-
-//$> ./philo [number_of_philosophers] [time_to_die] [time_to_eat] [time_to_sleep] ([number_of_times_each_philosopher_must_eat])
 
 int	main(int argc, char **argv)
 {
-	data_t	data;
+	t_data	data;
 
 	if (argc < 5 || 6 < argc)
 		return (2);
@@ -120,7 +120,7 @@ int	main(int argc, char **argv)
 		return (2);
 	if (parsing_args(&data, argc, argv) == 2)
 		return (2);
-	data.philosophers = malloc(data.nbr_philos * sizeof(philo_status_t));
+	data.philosophers = malloc(data.nbr_philos * sizeof(t_philo_status));
 	if (!data.philosophers)
 		return (2);
 	if (init_struct(&data) == 2)

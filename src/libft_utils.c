@@ -6,17 +6,17 @@
 /*   By: febouana <febouana@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 15:33:54 by febouana          #+#    #+#             */
-/*   Updated: 2024/09/16 19:26:31 by febouana         ###   ########.fr       */
+/*   Updated: 2024/10/08 21:02:02 by febouana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philosophers.h"
 
-long	ft_atol(const char *str) //! sah nsm autant prendre atoi normal ?
+long	ft_atol(const char *str)
 {
 	long	i;
 	long	nbr;
-	int	sign;
+	int		sign;
 
 	i = 0;
 	while ((str[i] >= 9 && str[i] <= 13) || str[i] == 32)
