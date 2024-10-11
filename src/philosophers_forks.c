@@ -6,11 +6,29 @@
 /*   By: febouana <febouana@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 17:39:05 by febouana          #+#    #+#             */
-/*   Updated: 2024/10/08 21:17:44 by febouana         ###   ########.fr       */
+/*   Updated: 2024/10/11 22:33:37 by febouana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philosophers.h"
+
+int	create_forks(t_data *data)
+{
+	int	i;
+
+	i = 0;
+	while (i < data->nbr_philos)
+	{
+		if (pthread_mutex_init(&data->philosophers[i].fork_l, NULL) != 0)
+		{
+			error_quit(data, i);
+			return (2);
+		}
+		i++;
+	}
+	assign_fork(data);
+	return (0);
+}
 
 int	lock_forks(t_data *data, int id)
 {

@@ -6,11 +6,31 @@
 /*   By: febouana <febouana@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 17:30:39 by febouana          #+#    #+#             */
-/*   Updated: 2024/10/08 21:17:44 by febouana         ###   ########.fr       */
+/*   Updated: 2024/10/11 22:34:20 by febouana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philosophers.h"
+
+long long	get_current_time(void)
+{
+	struct timeval	tv;
+	long long		milliseconds;
+
+	if (gettimeofday(&tv, NULL) == -1)
+		return (-1);
+	milliseconds = (tv.tv_sec * 1000LL) + (tv.tv_usec / 1000LL);
+	return (milliseconds);
+}
+
+void	ft_usleep(long long int time)
+{
+	long long int	start_time;
+
+	start_time = get_current_time();
+	while (get_current_time() - start_time < time)
+		usleep(10);
+}
 
 void	assign_fork(t_data *data)
 {
@@ -23,35 +43,6 @@ void	assign_fork(t_data *data)
 		i++;
 	}
 	data->philosophers[i].fork_r = &data->philosophers[0].fork_l;
-}
-
-int	create_forks(t_data *data)
-{
-	int	i;
-
-	i = 0;
-	while (i < data->nbr_philos)
-	{
-		if (pthread_mutex_init(&data->philosophers[i].fork_l, NULL) != 0)
-		{
-			error_quit(data, i);
-			return (2);
-		}
-		i++;
-	}
-	assign_fork(data);
-	return (0);
-}
-
-long long	get_current_time(void)
-{
-	struct timeval	tv;
-	long long		milliseconds;
-
-	if (gettimeofday(&tv, NULL) == -1)
-		return (-1);
-	milliseconds = (tv.tv_sec * 1000LL) + (tv.tv_usec / 1000LL);
-	return (milliseconds);
 }
 
 void	good_ending(t_data *data)

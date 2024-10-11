@@ -6,7 +6,7 @@
 /*   By: febouana <febouana@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 14:50:01 by febouana          #+#    #+#             */
-/*   Updated: 2024/10/08 21:20:09 by febouana         ###   ########.fr       */
+/*   Updated: 2024/10/11 22:35:01 by febouana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,13 +76,14 @@ void				will_die(t_data *data, int id);
 int					routine_solo(t_data *data, int id);
 
 //+ philosophers_utils.c
-void				assign_fork(t_data *data);
-int					create_forks(t_data *data);
 long long			get_current_time(void);
+void				ft_usleep(long long int time);
+void				assign_fork(t_data *data);
 void				good_ending(t_data *data);
 int					ft_print(t_data *data, int option, int id, long long time);
 
 //+ philosophers_forks.c
+int					create_forks(t_data *data);
 int					lock_forks(t_data *data, int id);
 void				direction_unlock_forks(t_data *data, int id);
 void				unlock_forks(t_data *data, int id);
@@ -99,5 +100,8 @@ int					verif_args(char **args);
 long				ft_atol(const char *str);
 void				ft_putchar_fd(char c, int fd);
 void				ft_putstr_fd(char *s, int fd);
+
+long long			get_current_time(void);
+t_bool				ft_get_time(long *time);
 
 #endif
